@@ -1,0 +1,275 @@
+										
+									~~~~~ Learning Selenium ~~~~~ 
+	POM - Project Object Model
+	- XML format
+	Dependency:
+	1. Selenium-java
+	2. Selenium - Server
+	3. JUnit/TestNG/Cucumber
+	
+		mvnrepository.com
+	
+	ChromeDriver - Controls Chrome Browser
+	Safari - Safari Driver
+	FireFox -  FireFox Driver
+	
+	Selenium Methods:
+		1. get();
+	
+	Three Types of Waits
+		1. Implicit Wait 
+			- Applied everywhere
+			- One done once
+			- At the beginning of Method
+			- Intelligent wait created for JAVA
+			- Will only wait as needed up to max 10
+		2. Explicit Wait
+		3. Fluid Wait
+		
+	Chrome Developer Tool
+	
+	DOM - Document Object Model
+	Nodes - Each html entry is a node
+	Attribute - Properties of the node/element
+	TagName - First word of the node/name of the node
+	
+	Special TagNames
+		1. button
+		2. input - typeable field
+		3. a - Hyperlink with attribute href = "link"
+	
+	Seven types of Element Locators or Identification methods
+		1. id - attribute 
+		2. name - attribute
+		3. css - style
+		4. linkText - the Hyperlink Text
+		5. PartilLink Text - part of that hyperlink Test
+		6. xpath - xml language 
+		7. class - attribute
+		
+	CSS Element Locators
+		- Faster way for java to capture element
+		- May need to incorporate multiple attributes
+		- Use any attribute of your choice
+		
+		1. tagName#id,
+		2. tag.class,
+		3. tag[attribute='value'],
+		​4. tag.class[attribute='value']
+	
+	Two Types of Xpath
+		- xml language to locate a node/element in the DOM
+		
+		1. Absolute xpath
+			- Starts with grandfather tag = html
+			- uses single forward slash to get to the element
+			- goes through every single node to get to the element
+		2. Relative xpath
+			- Starts with double (//) forward slash
+			- user attributes 
+			- Example of CSS: input[name = 'firstName']
+			- xpath Example:    //input[@name = 'firstName']
+		
+	Formulating Test Case:
+		1. What does the page do?
+		2. How do I test it?
+	
+	Test Case 1: User with valid credentials should be able to login
+		1. Go to techfios site,
+		2. Input username,
+		3. Input password,
+		4. click on sign in button,
+		5. Dashboard page should display. 
+	
+	Three ways to validate:
+		1. Just by interacting with elements, 
+		2. With Explicit Wait,
+		3. Assertion.
+	
+	xpath: 
+		1.   *
+		2. contains()
+		3. text()
+	
+	Xpath Axis Relationships:
+		1. Parent, shortcut: /..
+		2. Child
+		3. following-sibling
+		4. preceding-sibling
+		5. ancestor
+		6. descendant
+	
+	Syntax: //Relationship::
+	
+	
+	2. Explicit Wait: 
+		- Wait applied specifically to each element each time,
+		- With a time contraint 
+		- Specify a condition, such 
+		- visibilityOfElementLocated
+		- elementToBeClickable
+		- TimeoutException
+	
+	Seleniumn Exceptions:
+		1. NoSuchElementException,
+		2. TimeOutException,
+		
+	Hover Over Function
+		- Use Actions Class
+	
+	JUnit
+		1. @Test
+		2. @BeforeClass
+		3. @AfterClass
+		4. @Before - executed before @Test
+		5. @After  - executed after @Test
+	
+	Test case 2: User should be able to retrieve password
+	Test case 3: Invalid users should not be able to login
+	
+	Session 5 Notes: 
+	
+	Window Handle:
+		- Unique window number as String
+		Example, 
+		CDwindow-227CEFA70063D1F23D6B4E756EF94FAD
+		CDwindow-05419B3F19E4014B1661CF8D8DB06F8A
+	
+	
+	TestNG
+		- @Test
+		- @BeforeTest/@AfterTest
+		- @BeforeMethod/@AfterMethod
+		- @BeforeClass/@AfterClass
+		- @BeforeSuite/@AfterSuite
+		- Set Prioties to Test case: @Test(priority=1)
+		- Priority should only be used under compelling reason
+		- Individual test cases should not be dependent on other test case
+		- Eclipse plugin for TestNG
+		- Maven configured with eclipse 
+	
+	Dependencies:
+		1. TestNG
+		2. Selenium-Java
+		3. Selenium-Server
+	
+	StaleElementException
+		- Pain in the neck
+		- Element was there before
+		- But can not be found
+	
+	
+----------------- login test--------------------
+
+public class LoginTest {
+	
+	static WebDriver driver;
+	
+	public static void main(String[] args) {
+		
+		init();
+		loginTest();
+		tearDown();
+		
+		init();
+		negLoginTest();
+		tearDown();
+	}
+	
+	public static void init() {
+		
+//		System.setProperty("webdriver.chrome.driver", "C:\\Users\\Dell\\Apr22_Selenium\\crm\\driver\\chromedriver.exe");
+//		System.setProperty("webdriver.chrome.driver", ".\\driver\\chromedriver.exe");
+//		System.setProperty("webdriver.chrome.driver", "driver\\chromedriver.exe");
+		System.setProperty("webdriver.chrome.driver", "driver/chromedriver.exe");
+		driver = new ChromeDriver();
+		driver.manage().deleteAllCookies();
+		driver.get("https://techfios.com/billing/?ng=admin/");
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		
+	}
+	public static void loginTest() {
+
+		driver.findElement(By.id("username")).sendKeys("demo@techfios.com");
+		driver.findElement(By.id("password")).sendKeys("abc123");
+		driver.findElement(By.name("login")).click();
+		
+	} 
+	public static void tearDown() {
+		driver.close();
+		driver.quit();
+	}
+	
+	public static void negLoginTest() {
+		driver.findElement(By.id("username")).sendKeys("demo@techfios.com");
+		driver.findElement(By.id("password")).sendKeys("abc1234543");
+		driver.findElement(By.name("login")).click();
+	} 
+
+}
+
+
+
+-------------------login test junit --------------------
+
+public class LoginTest_Junit {
+
+	WebDriver driver;
+	
+	@BeforeClass
+	public static void beforeClass() {
+		System.out.println("before class");
+	}
+	
+	@AfterClass
+	public static void afterClass() {
+		System.out.println("after class");
+	}
+	
+	@Before
+	public void init() {
+		System.out.println("init method");
+
+		System.setProperty("webdriver.chrome.driver", "driver/chromedriver.exe");
+		driver = new ChromeDriver();
+		driver.manage().deleteAllCookies();
+		driver.get("https://techfios.com/billing/?ng=admin/");
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
+	}
+	
+	@Test
+	public void loginTest() {
+		System.out.println("Login test");
+		driver.findElement(By.id("username")).sendKeys("demo@techfios.com");
+		driver.findElement(By.id("password")).sendKeys("abc123");
+		driver.findElement(By.name("login")).click();
+
+	}
+	
+	@Test
+	public void negLoginTest() {
+		System.out.println("Neg login test");
+		driver.findElement(By.id("username")).sendKeys("demo@techfios.com");
+		driver.findElement(By.id("password")).sendKeys("abc1234543");
+		driver.findElement(By.name("login")).click();
+	}
+
+	
+	@After
+	public void tearDown() {
+		System.out.println("tear down");
+		driver.close();
+		driver.quit();
+	}
+	
+	
+}
+
+______________________________________________________________________________________________
+
+
+					
+				
